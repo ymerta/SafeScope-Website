@@ -1,0 +1,14 @@
+
+.alerts-page {
+  display: flex;
+  flex-direction: row; 
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #1e1e1e;
+  color: white;
+  height: calc(100vh - 60px);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+

@@ -1,0 +1,73 @@
+.ppe-page {
+    display: flex;
+    flex-direction: row; 
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #1e1e1e;
+    color: white;
+    height: calc(100vh - 60px); 
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  
+  
+
+.left-section {
+    display: flex;
+    flex-direction: column; 
+    gap: 1rem;
+    flex: 2;
+    overflow: hidden; 
+  }
+  
+  .right-section {
+    flex: 1; 
+    background-color: #2c2c2c;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .camera-feed-container {
+    flex: 1;
+    background-color: #2c2c2c;
+    padding: 1rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .data-table-container {
+    flex: 1;
+    background-color: #2c2c2c;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-y: auto;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse; 
+    text-align: center; 
+    color: #fff;
+  }
+  
+  thead th {
+    background-color: #444;
+    color: #fff;
+    padding: 1rem;
+    border: 1px solid #555;
+    text-align: center;
+  }
+  
+  tbody td {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem;
+    border: 1px solid #444;
+    vertical-align: middle; 
+  }
+  
+  tr:hover {
+    background-color: #555; 
+  }

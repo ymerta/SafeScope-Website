@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDJ299e2CLHOX-kcvh_TkhgYlzOqPU6OXI",
+  apiKey: "API-KEY",
   authDomain: "ppedetection-ac0e8.firebaseapp.com",
   projectId: "ppedetection-ac0e8",
   storageBucket: "ppedetection-ac0e8.firebasestorage.app",

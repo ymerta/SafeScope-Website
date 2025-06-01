@@ -10,15 +10,15 @@ const Sidebar: React.FC = () => {
       <hr />
       <ul>
         <li>
-          <NavLink
-            to="/dashboard"
-            className={({ isActive }: { isActive: boolean }) =>
-              isActive ? 'active' : ''
-            }
-          >
-            <span className="icon"><FaHome /></span>
-            Dashboard
-          </NavLink>
+        <NavLink
+  to="/"
+  className={({ isActive }: { isActive: boolean }) =>
+    isActive ? 'active' : ''
+  }
+>
+  <span className="icon"><FaHome /></span>
+  Dashboard
+</NavLink>
         </li>
       </ul>
       <h4>Pages</h4>

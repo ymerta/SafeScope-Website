@@ -1,0 +1,32 @@
+.camera-section {
+    background-color: #2c2c2c;
+    padding: 1rem;
+    border-radius: 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* Flex içindeki overflow kontrolü */
+  }
+  
+  .camera-section h3 {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+  }
+  
+  .camera-placeholder {
+    flex: 1;
+    min-height: 0;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+  
+  .camera-placeholder img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+  }

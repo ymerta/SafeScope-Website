@@ -1,67 +1,48 @@
 import React, { useEffect, useState } from "react";
-import { database } from "../firebase";
-import { ref, onValue } from "firebase/database";
-import "../styles/PPEAlerts.css";
+import { database, ref, onValue } from "../firebase";
+import "../styles/PPEPage.css";
+
+type PPEAlert = {
+  worker_id: string;
+  missing_ppe: string[];
+  timestamp: string;
+};
 
 const PPEAlerts: React.FC = () => {
-  const [alerts, setAlerts] = useState<any[]>([]);
+  const [alerts, setAlerts] = useState<PPEAlert[]>([]);
 
   useEffect(() => {
-    const ppeRef = ref(database, "/ppe-detection"); 
-    const unsubscribe = onValue(ppeRef, (snapshot) => {
-      const firebaseData = snapshot.val();
-      if (firebaseData) {
-        const formattedData = Object.entries(firebaseData)
-          .map(([key, item]: [string, any]) => {
-            const missingPPECount = item.missing?.length || 0;
-            let severity = "";
-
-       
-            if (missingPPECount === 2) {
-              severity = "High";
-            } else if (missingPPECount === 1) {
-              severity = "Medium";
-            }
-
-            if (missingPPECount > 0) {
-              return {
-                id: key,
-                missing: item.missing?.join(", ") || "None",
-                severity,
-                timestamp: item.timestamp || "No timestamp",
-              };
-            }
-            return null; 
-          })
-          .filter((alert) => alert !== null) 
-          .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-        setAlerts(formattedData);
+    const alertsRef = ref(database, "ppe-detection-table");
+    onValue(alertsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const parsed: PPEAlert[] = Object.values(data);
+        setAlerts(parsed.reverse().slice(0, 6));
       }
     });
-
-    return () => unsubscribe(); 
   }, []);
 
   return (
     <div className="ppe-alerts">
-      <h2>PPE Alerts</h2>
-      <div className="alerts-container">
-        {alerts.map((alert) => (
-          <div key={alert.id} className="ppe-alert">
-            <div className="alert-details">
-              <p>
-                <strong>Missing PPE:</strong> {alert.missing}
-              </p>
-              <p>
-                <strong>Severity:</strong> {alert.severity}
-              </p>
-              <p>
-                <strong>Timestamp:</strong> {alert.timestamp}
-              </p>
+      <h3 style={{ textAlign: "center", textDecoration: "underline", marginBottom: "1rem" }}>
+        PPE Alerts
+      </h3>
+      {alerts.length === 0 ? (
+        <p>No critical items detected.</p>
+      ) : (
+        <div className="alerts-list">
+          {alerts.map((alert, i) => (
+            <div className="alert-card" key={i}>
+              <p><b>Worker ID:</b> {alert.worker_id}</p>
+              <p><b>Missing:</b> {alert.missing_ppe.join(", ")}</p>
+              <p><b>Severity:</b> High</p>
+              <p><b>Timestamp:</b> {alert.timestamp}</p>
+              <button className="view-details-btn">View Details</button>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
+      <button className="archive-btn">Archive Alerts</button>
     </div>
   );
 };

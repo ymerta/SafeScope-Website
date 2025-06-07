@@ -1,51 +1,53 @@
 import React, { useEffect, useState } from "react";
-import { database } from "../firebase";
-import { ref, onValue } from "firebase/database";
+import { database, ref, onValue } from "../firebase";
 
-const DataTable: React.FC = () => {
-    const [data, setData] = useState<any[]>([]);
-
-    useEffect(() => {
-        const ppeRef = ref(database, "/ppe-detection");
-
-        onValue(ppeRef, (snapshot) => {
-            const firebaseData = snapshot.val();
-            const formattedData = firebaseData
-                ? Object.values(firebaseData)
-                      .map((item: any) => ({
-                          detected: item.detected ? item.detected.join(", ") : "None",
-                          missing: item.missing ? item.missing.join(", ") : "None",
-                          timestamp: item.timestamp || "Unknown",
-                      }))
-                      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()) // Zaman damgasına göre sıralama
-                : [];
-            setData(formattedData);
-        });
-    }, []);
-
-    return (
-        <div className="data-table">
-            <h2>PPE Detection Data</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Detected PPE</th>
-                        <th>Missing PPE</th>
-                        <th>Timestamp</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.map((row, index) => (
-                        <tr key={index}>
-                            <td>{row.detected}</td>
-                            <td>{row.missing}</td>
-                            <td>{row.timestamp}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    );
+type PPEDetection = {
+  worker_id: string;
+  missing_ppe: string[];
+  detected_ppe?: string[];
+  timestamp: string;
 };
 
-export default DataTable;
+const PPEDataTable: React.FC = () => {
+  const [rows, setRows] = useState<PPEDetection[]>([]);
+
+  useEffect(() => {
+    const detectionRef = ref(database, "ppe-detection-table");
+    onValue(detectionRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const parsed: PPEDetection[] = Object.values(data);
+        // Yeni gelenler en üste gelsin
+        setRows(parsed.reverse().slice(0, 10));
+      }
+    });
+  }, []);
+
+  return (
+    <div className="data-table">
+      <h2>Live PPE Detection Table</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Worker ID</th>
+            <th>Detected PPE</th>
+            <th>Missing PPE</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, i) => (
+            <tr key={i}>
+              <td>{row.worker_id || "Unknown"}</td>
+              <td>{row.detected_ppe ? row.detected_ppe.join(", ") : "-"}</td>
+              <td>{row.missing_ppe ? row.missing_ppe.join(", ") : "-"}</td>
+              <td>{row.timestamp || "-"}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default PPEDataTable;

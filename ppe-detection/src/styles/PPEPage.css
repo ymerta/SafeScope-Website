@@ -44,7 +44,68 @@
     border-radius: 8px;
     overflow-y: auto;
   }
+  .ppe-alerts {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    color: white;
+  }
   
+  .alerts-title {
+    font-size: 1.4rem;
+    text-align: center;
+    text-decoration: underline;
+    color: white;
+  }
+  
+  .alerts-list {
+    max-height: 60vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .alert-card {
+    background-color: #1e1e1e;
+    border: 1px solid #444;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.05);
+  }
+  
+  .alert-card p {
+    margin: 0.4rem 0;
+    font-size: 0.95rem;
+  }
+  
+  .view-button {
+    margin-top: 0.5rem;
+    padding: 0.4rem 1rem;
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .archive-button {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    width: 100%;
+    background-color: #facc15;
+    color: black;
+    font-weight: bold;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .archive-button:hover {
+    background-color: #eab308;
+  }
   table {
     width: 100%;
     border-collapse: collapse; 

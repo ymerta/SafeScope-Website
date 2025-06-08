@@ -30,9 +30,10 @@
     background-color: #2c2c2c;
     padding: 1rem;
     border-radius: 12px;
-    flex: 1;
     display: flex;
     flex-direction: column;
+    min-height: 300px; /* 🔄 eski hali min-height: 200px idi */
+    height: 350px;     /* ✅ İsteğe bağlı olarak sabit yükseklik de eklenebilir */
   }
   
   .map-section h3 {
@@ -55,6 +56,7 @@
     background-color: #2c2c2c;
     padding: 1rem;
     border-radius: 12px;
+    overflow-y: auto;
   }
   
   .proximity-table table {

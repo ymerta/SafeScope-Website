@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "../styles/UserGuide.css";
-import { database, ref, set, onValue, remove } from "../firebase"; // 🔧 remove eklendi
+import { database, ref, set, onValue, remove } from "../firebase";
 import CameraLocationPicker from "../components/CameraLocationPicker";
 
 const UserGuide: React.FC = () => {
-  const [selectedPPE, setSelectedPPE] = useState<string[]>(["Helmet"]);
+  const [selectedPPE, setSelectedPPE] = useState<string[]>([]);
   const [distance, setDistance] = useState(5);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -13,6 +13,12 @@ const UserGuide: React.FC = () => {
   const [lng, setLng] = useState(32.8541);
   const [showPopup, setShowPopup] = useState(false);
   const [cameraList, setCameraList] = useState<any[]>([]);
+
+  // ✅ PPE sınıfları
+  const PPE_CLASSES = [
+    "helmet", "gloves", "safety-vest", "face-mask",
+    "glasses", "safety-suit", "ear-mufs", "face-guard"
+  ];
 
   const handlePPEChange = (ppe: string) => {
     setSelectedPPE((prev) =>
@@ -48,12 +54,20 @@ const UserGuide: React.FC = () => {
     const camerasRef = ref(database, "camera-settings");
     onValue(camerasRef, (snapshot) => {
       const data = snapshot.val();
+      if (data && data[cameraId]) {
+        const current = data[cameraId];
+        setDistance(current.proximity_threshold || 5);
+        setSelectedPPE(current.selected_ppe || []);
+        setLat(current.location?.lat || 39.9208);
+        setLng(current.location?.lng || 32.8541);
+        setEmail(current.email || "");
+        setPhone(current.phone || "");
+      }
       if (data) {
-        const list = Object.values(data);
-        setCameraList(list);
+        setCameraList(Object.values(data));
       }
     });
-  }, []);
+  }, [cameraId]);
 
   return (
     <div className="user-guide">
@@ -69,14 +83,14 @@ const UserGuide: React.FC = () => {
             onChange={(e) => setDistance(Number(e.target.value))}
           />
           <p>Selected Distance: {distance.toFixed(1)} m</p>
-          <button className="save-button">Save Settings</button>
+          <button className="save-button" onClick={saveSettings}>Save Settings</button>
         </div>
 
         {/* PPE Settings */}
         <div className="settings-box ppe">
           <h3>PPE Detection Settings</h3>
           <div className="checkbox-group">
-            {["Helmet", "Vest", "Gloves", "Boots", "Safety Goggles"].map((ppe) => (
+            {PPE_CLASSES.map((ppe) => (
               <label key={ppe}>
                 <input
                   type="checkbox"
@@ -87,8 +101,46 @@ const UserGuide: React.FC = () => {
               </label>
             ))}
           </div>
-          <button className="save-button">Save Settings</button>
+          <button className="save-button" onClick={saveSettings}>Save Settings</button>
         </div>
+
+      {/* PPE Settings */}
+<div className="settings-box ppe">
+  <h3>PPE Detection Settings</h3>
+
+  {/* Kamera Seçici */}
+  <label style={{ marginBottom: '1rem', display: 'block' }}>
+    Select Camera:
+    <select
+      style={{ marginTop: '0.5rem', padding: '0.5rem', borderRadius: '6px' }}
+      value={cameraId}
+      onChange={(e) => setCameraId(e.target.value)}
+    >
+      {cameraList.map((cam: any) => (
+        <option key={cam.camera_id} value={cam.camera_id}>
+          {cam.camera_id}
+        </option>
+      ))}
+    </select>
+  </label>
+
+  {/* Checkboxlar */}
+  <div className="checkbox-group">
+    {PPE_CLASSES.map((ppe) => (
+      <label key={ppe}>
+        <input
+          type="checkbox"
+          checked={selectedPPE.includes(ppe)}
+          onChange={() => handlePPEChange(ppe)}
+        />
+        {ppe}
+      </label>
+    ))}
+  </div>
+  <button className="save-button" onClick={saveSettings}>
+    Save Settings
+  </button>
+</div>
 
         {/* Notification Settings */}
         <div className="settings-box notify">

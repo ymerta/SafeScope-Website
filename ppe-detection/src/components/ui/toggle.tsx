@@ -1,11 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-export const Toggle: React.FC<{ defaultPressed?: boolean }> = ({ defaultPressed = false }) => {
+interface ToggleProps {
+  defaultPressed?: boolean;
+  onToggle?: (value: boolean) => void;
+}
+
+export const Toggle: React.FC<ToggleProps> = ({ defaultPressed = false, onToggle }) => {
   const [isOn, setIsOn] = useState(defaultPressed);
+
+  useEffect(() => {
+    if (onToggle) onToggle(isOn);
+  }, [isOn, onToggle]);
+
+  const handleToggle = () => setIsOn(!isOn);
 
   return (
     <button
-      onClick={() => setIsOn(!isOn)}
+      onClick={handleToggle}
       className={`w-12 h-6 rounded-full relative transition-colors ${
         isOn ? "bg-green-500" : "bg-gray-300"
       }`}

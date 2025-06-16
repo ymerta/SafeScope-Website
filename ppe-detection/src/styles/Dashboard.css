@@ -62,6 +62,8 @@
   border-radius: 1rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   max-height: 400px ;
+  overflow-x: scroll;
+
 }
 .guide-panel {
   background-color: #2c2c2c;

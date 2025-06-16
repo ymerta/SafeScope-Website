@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../styles/UserGuide.css";
 import { database, ref, set, onValue, remove } from "../firebase";
 import CameraLocationPicker from "../components/CameraLocationPicker";
+import WorkerList from "../components/WorkerList";
 
 const UserGuide: React.FC = () => {
   const [selectedPPE, setSelectedPPE] = useState<string[]>([]);
@@ -13,8 +14,10 @@ const UserGuide: React.FC = () => {
   const [lng, setLng] = useState(32.8541);
   const [showPopup, setShowPopup] = useState(false);
   const [cameraList, setCameraList] = useState<any[]>([]);
+  const [workerName, setWorkerName] = useState("");
+  const [workerBadge, setWorkerBadge] = useState("");
+  const [workerRole, setWorkerRole] = useState("");
 
-  // ✅ PPE sınıfları
   const PPE_CLASSES = [
     "helmet", "gloves", "safety-vest", "face-mask",
     "glasses", "safety-suit", "ear-mufs", "face-guard"
@@ -42,6 +45,19 @@ const UserGuide: React.FC = () => {
     };
     set(ref(database, `camera-settings/${cameraId}`), config);
     setShowPopup(false);
+  };
+
+  const saveWorker = () => {
+    if (!workerName || !workerBadge || !workerRole) return;
+    const newWorkerId = `W${Date.now()}`;
+    set(ref(database, `workers/${newWorkerId}`), {
+      name: workerName,
+      badge: workerBadge,
+      role: workerRole
+    });
+    setWorkerName("");
+    setWorkerBadge("");
+    setWorkerRole("");
   };
 
   const deleteCamera = (id: string) => {
@@ -72,7 +88,6 @@ const UserGuide: React.FC = () => {
   return (
     <div className="user-guide">
       <div className="user-guide-content">
-        {/* Proximity Threshold */}
         <div className="settings-box slider">
           <h3>Proximity Threshold Settings</h3>
           <input
@@ -86,9 +101,22 @@ const UserGuide: React.FC = () => {
           <button className="save-button" onClick={saveSettings}>Save Settings</button>
         </div>
 
-        {/* PPE Settings */}
         <div className="settings-box ppe">
           <h3>PPE Detection Settings</h3>
+          <label style={{ marginBottom: '1rem', display: 'block' }}>
+            Select Camera:
+            <select
+              style={{ marginTop: '0.5rem', padding: '0.5rem', borderRadius: '6px' }}
+              value={cameraId}
+              onChange={(e) => setCameraId(e.target.value)}
+            >
+              {cameraList.map((cam: any) => (
+                <option key={cam.camera_id} value={cam.camera_id}>
+                  {cam.camera_id}
+                </option>
+              ))}
+            </select>
+          </label>
           <div className="checkbox-group">
             {PPE_CLASSES.map((ppe) => (
               <label key={ppe}>
@@ -104,45 +132,6 @@ const UserGuide: React.FC = () => {
           <button className="save-button" onClick={saveSettings}>Save Settings</button>
         </div>
 
-      {/* PPE Settings */}
-<div className="settings-box ppe">
-  <h3>PPE Detection Settings</h3>
-
-  {/* Kamera Seçici */}
-  <label style={{ marginBottom: '1rem', display: 'block' }}>
-    Select Camera:
-    <select
-      style={{ marginTop: '0.5rem', padding: '0.5rem', borderRadius: '6px' }}
-      value={cameraId}
-      onChange={(e) => setCameraId(e.target.value)}
-    >
-      {cameraList.map((cam: any) => (
-        <option key={cam.camera_id} value={cam.camera_id}>
-          {cam.camera_id}
-        </option>
-      ))}
-    </select>
-  </label>
-
-  {/* Checkboxlar */}
-  <div className="checkbox-group">
-    {PPE_CLASSES.map((ppe) => (
-      <label key={ppe}>
-        <input
-          type="checkbox"
-          checked={selectedPPE.includes(ppe)}
-          onChange={() => handlePPEChange(ppe)}
-        />
-        {ppe}
-      </label>
-    ))}
-  </div>
-  <button className="save-button" onClick={saveSettings}>
-    Save Settings
-  </button>
-</div>
-
-        {/* Notification Settings */}
         <div className="settings-box notify">
           <h3>Notification Settings</h3>
           <div className="input-group">
@@ -158,7 +147,6 @@ const UserGuide: React.FC = () => {
           <button className="save-button">Save Notification Settings</button>
         </div>
 
-        {/* Camera Management */}
         <div className="settings-box">
           <h3>Camera Management</h3>
           <button className="save-button" onClick={() => setShowPopup(true)}>+ Add Camera</button>
@@ -187,7 +175,26 @@ const UserGuide: React.FC = () => {
           </ul>
         </div>
 
-        {/* Modal */}
+        <div className="settings-box">
+          <h3>Worker Registration</h3>
+          <div className="input-group">
+            <label>
+              Full Name:
+              <input type="text" value={workerName} onChange={(e) => setWorkerName(e.target.value)} />
+            </label>
+            <label>
+              Badge Code:
+              <input type="text" value={workerBadge} onChange={(e) => setWorkerBadge(e.target.value)} />
+            </label>
+            <label>
+              Role:
+              <input type="text" value={workerRole} onChange={(e) => setWorkerRole(e.target.value)} />
+            </label>
+          </div>
+          <button className="save-button" onClick={saveWorker}>Save Worker</button>
+        </div>
+        <WorkerList />
+
         {showPopup && (
           <div className="popup-overlay">
             <div className="popup">
@@ -205,9 +212,7 @@ const UserGuide: React.FC = () => {
                 Longitude:
                 <input type="number" value={lng} onChange={(e) => setLng(Number(e.target.value))} />
               </label>
-              <button className="save-button" onClick={saveSettings}>
-                Save Settings
-              </button>
+              <button className="save-button" onClick={saveSettings}>Save Settings</button>
               <button
                 className="save-button"
                 style={{ backgroundColor: "#444", marginTop: "0.5rem" }}

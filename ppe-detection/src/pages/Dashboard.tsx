@@ -77,7 +77,7 @@ const Dashboard: React.FC = () => {
     setLatestAlerts((prev) => {
       const combined = [...prev, ...incoming];
       const uniqueById = Array.from(new Map(combined.map(i => [i.timestamp + i.worker_id, i])).values());
-      return uniqueById.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).slice(0, 3);
+      return uniqueById.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
     });
   };
 

@@ -1,4 +1,4 @@
-#🚧 SafeScope: AI-Powered Site Safety Monitoring System
+🚧 SafeScope: AI-Powered Site Safety Monitoring System
 SafeScope is an AI-based safety system developed to monitor personal protective equipment (PPE) compliance and dangerous proximity between workers and heavy machinery in real-time on construction and industrial sites. It combines deep learning models with a responsive web application to prevent accidents and improve workplace safety.
 
 🔍 Project Highlights:
